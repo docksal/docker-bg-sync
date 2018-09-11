@@ -15,6 +15,12 @@ RUN apk add --no-cache --virtual .build-dependencies build-base curl && \
     cp src/unison src/unison-fsmonitor /usr/local/bin && \
     apk del .build-dependencies ocaml && \
     rm -rf /tmp/unison-${UNISON_VERSION}
+    # Create user
+    echo "docker:x:$HOST_UID:$HOST_UID::/home/docker:" >> /etc/passwd && \
+    ## thanks for http://stackoverflow.com/a/1094354/535203 to compute the creation date
+    echo "docker:!:$(($(date +%s) / 60 / 60 / 24)):0:99999:7:::" >> /etc/shadow && \
+    echo "docker:x:$HOST_UID:" >> /etc/group && \
+    mkdir /home/docker && chown docker: /home/docker
 
 ENV HOME="/root" \
     UNISON_USER="root" \
