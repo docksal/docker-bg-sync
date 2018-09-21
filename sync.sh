@@ -65,7 +65,15 @@ if [[ "$UNISON_USER" != "root" ]]; then
   # Create user, if it does not exist
   if ! grep -q "$UNISON_USER" /etc/passwd; then
       log_info "Creating user $UNISON_USER (UID=$UNISON_UID,GID=$UNISON_GID)"
-      adduser -u "$UNISON_UID" -D -S -G "$UNISON_GROUP" "$UNISON_USER" -s "$SHELL"
+
+      # Create user in a way that allows high user IDs.
+      # @see https://stackoverflow.com/a/42133612/1483861
+      echo "$UNISON_USER:x:$UNISON_UID:$UNISON_UID::/home/$UNISON_USER:" >> /etc/passwd
+      # Compute creation date
+      # @see http://stackoverflow.com/a/1094354/535203
+      echo "$UNISON_USER:!:$(($(date +%s) / 60 / 60 / 24)):0:99999:7:::" >> /etc/shadow
+      echo "$UNISON_GROUP:x:$UNISON_UID:" >> /etc/group
+      mkdir /home/${UNISON_USER} && chown ${UNISON_USER}: /home/${UNISON_USER}
   fi
 
   # Create unison directory
