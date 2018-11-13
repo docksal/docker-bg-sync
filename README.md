@@ -17,8 +17,8 @@ Unison container suited for Docksal needs. Continuously syncs files between two 
 
 ## Additional environment variables
 
-You do not need to set any additional variables for the container to work, 
-but you can override them, if you undertstand what you are doing.
+You do not need to set any additional variables for the container to work,
+but you can override them if you understand what you are doing.
 
 This container uses values from a handful of environment variables. These are
 documented below.
@@ -32,15 +32,14 @@ documented below.
     If you are using bg-sync to avoid filesystem slowness, you should set this
     path to whatever path the volume is at in your application container. In the
     example above, for instance, this would be `/var/www/myapp`.
-  * **`SYNC_PREFER`** (default: `/source`): Control the conflict strategy to apply
-    when there are conflits. By default the contents from the source folder are
-    left unchanged but there is also the "newer" option to pick up the most
-    recent files.
+  * **`SYNC_PREFER`** (default in image: `/source`, default in Docksal: `newer`):
+  Control the conflict strategy to apply when there are conflicts. The "newer"
+  option will pick up the most recent files.
   * **`SYNC_MAX_INOTIFY_WATCHES`** (default in image: '', default in Docksal: '524288'): If set, the sync script will
     attempt to increase the value of `fs.inotify.max_user_watches`. **IMPORTANT**:
-    This requires that you run this container as a priviliged container. Otherwise,
+    This requires that you run this container as a privileged container. Otherwise,
     the inotify limit increase *will not work*. As always, when running a third
-    party container as a priviliged container, look through the source thoroughly
+    party container as a privileged container, look through the source thoroughly
     first to make sure it won't do anything nefarious. `sync.sh` should be pretty
     understandable. Go on - read it. I'll wait.
   * **`SYNC_EXTRA_UNISON_PROFILE_OPTS`** (default: ''): The value of this variable
@@ -52,7 +51,7 @@ documented below.
     of this configuration is *not*. Use this option at your own risk.
   * **`SYNC_NODELETE_SOURCE`** (default in image: '1', default in Docksal: '0'): Set this variable to "0" to allow
     Unison to sync deletions to the source directory. This could cause unpredictable
-    behaviour with your source files.
+    behavior with your source files.
   * **`UNISON_USER`** (default: 'root'): The user running Unison. When this value
     is customized it's also possible to specify UNISON_UID, UNISON_GROUP and
     UNISON_GID to ensure that unison has the correct permissions to manage files
